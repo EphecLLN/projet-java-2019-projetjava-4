@@ -52,7 +52,7 @@ public class Prof {
 	 * this method give a textual representation of the teacher;
 	 */
 	public String toString(){
-		return ("nom : "+this.nom+"\nPrenom : "+this.prenom+"\n specialite :"+this.groupe);
+		return ("nom : "+this.nom+"\nPrenom : "+this.prenom+"\n Groupe :"+this.groupe);
 		
 	}
 	
