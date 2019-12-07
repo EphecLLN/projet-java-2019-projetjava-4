@@ -1,0 +1,210 @@
+package ecrans;
+
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JComboBox;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridLayout;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.util.StringTokenizer;
+
+import pack_classe.Etudiant;
+import pack_classe.Matiere;
+import pack_classe.Note;
+
+
+
+
+
+public class Accueil implements ActionListener{
+
+private JPanel cp,cc;	
+private JComboBox et,mt,nt;
+private Etudiant etdt = new Etudiant();
+private Matiere mtre = new Matiere();
+private Note nte = new Note();
+private JTextField cne,cpn,cdn,cme,cidse,cnr,cnm,ccm,cmm,cidsm,cideln,cidean,cidman,cna,cidesn,cidmsn,cns;
+private JLabel lme,lmm;
+	
+
+
+public Accueil(){
+
+this.cp = new JPanel(false);
+this.cp.setBackground(Color.WHITE);
+
+JLabel nomApplication = new JLabel("ESTM - GESTION DES NOTES");
+nomApplication.setOpaque(true);
+nomApplication.setBackground(Color.WHITE);
+nomApplication.setForeground(new Color(102,51,0));
+nomApplication.setFont(new Font("Verdana",Font.BOLD,54));
+
+JLabel lh = new JLabel("___________________________________");
+lh.setOpaque(true);
+lh.setBackground(Color.WHITE);
+lh.setForeground(new Color(102,51,0));
+lh.setFont(new Font("Verdana",Font.BOLD,38));	
+
+
+Object[] menuEt = new Object[]{"Etudiants","Liste des étudiants","Ajout d'un étudiant"
+                              ,"Modification d'un étudiant","Suppression d'un étudiant"
+                              ,"Recherche d'un étudiant"};
+this.et = new JComboBox(menuEt);
+this.et.setBackground(new Color(102,51,0));
+this.et.setFont(new Font("Verdana",Font.BOLD,11));
+this.et.setForeground(Color.WHITE);
+this.et.addActionListener(this);
+
+Object[] menuMt = new Object[]{"Matières","Liste des matières","Ajout d'une matière"
+                               ,"Modification d'une matière","Suppression d'une matière"};
+this.mt = new JComboBox(menuMt);
+this.mt.setBackground(new Color(102,51,0));
+this.mt.setFont(new Font("Verdana",Font.BOLD,11));
+this.mt.setForeground(Color.WHITE);
+this.mt.addActionListener(this);
+
+Object[] menuNt = new Object[]{"Notes","Notes d'un étudiant","Moyenne par matière"
+		                       ,"Ajout d'une note","Suppression d'une note"};
+this.nt = new JComboBox(menuNt);
+this.nt.setBackground(new Color(102,51,0));
+this.nt.setFont(new Font("Verdana",Font.BOLD,11));
+this.nt.setForeground(Color.WHITE);
+this.nt.addActionListener(this);
+
+JLabel lb = new JLabel("___________________________________");
+lb.setOpaque(true);
+lb.setBackground(Color.WHITE);
+lb.setForeground(new Color(102,51,0));
+lb.setFont(new Font("Verdana",Font.BOLD,38));
+
+this.cc = new JPanel(false);
+this.cc.setBackground(Color.WHITE);
+
+this.cp.add(nomApplication);
+this.cp.add(lh);
+this.cp.add(this.et);
+this.cp.add(this.mt);
+this.cp.add(this.nt);
+this.cp.add(lb);
+this.cp.add(this.cc);
+
+
+JFrame f = new JFrame("Gestion des notes");
+f.getContentPane().add(cp);
+f.setBounds(0,0,1024,768);
+f.setResizable(false);
+f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+f.setVisible(true);
+
+}
+
+
+
+public void actionPerformed(ActionEvent ae){
+	
+if(ae.getSource() == et){
+	
+Object tache = et.getSelectedItem();
+et.getSelectedIndex();
+
+if(tache.equals("Liste des étudiants")) this.afficherListeEtudiants("listage");
+else if(tache.equals("Ajout d'un étudiant")) this.afficherInterfaceAjoutEtudiant("insertion");
+else if(tache.equals("Modification d'un étudiant")){
+	this.afficherInterfaceAjoutEtudiant("modification");
+	this.lme.setEnabled(true);
+	this.cme.setEditable(true);
+}
+else if(tache.equals("Suppression d'un étudiant")) this.afficherInterfaceSuppressionEtudiant();
+else if(tache.equals("Recherche d'un étudiant")) this.afficherInterfaceRechercheEtudiant();
+	
+}
+
+if(ae.getSource() == mt){
+	
+Object tache = mt.getSelectedItem();
+mt.getSelectedIndex();
+
+if(tache.equals("Liste des matières")) this.afficherListeMatieres();
+else if(tache.equals("Ajout d'une matière")) this.afficherInterfaceAjoutMatiere("insertion");
+else if(tache.equals("Modification d'une matière")){
+	this.afficherInterfaceAjoutMatiere("modification");
+	this.lmm.setEnabled(true);
+	this.cmm.setEditable(true);
+}
+else if(tache.equals("Suppression d'une matière")) this.afficherInterfaceSuppressionMatiere();
+		
+}
+
+if(ae.getSource() == nt){
+	
+Object tache = nt.getSelectedItem();
+nt.getSelectedIndex();
+
+if(tache.equals("Notes d'un étudiant")) this.afficherListeNotes();
+else if(tache.equals("Ajout d'une note")) this.afficherInterfaceAjoutNote();
+else if(tache.equals("Suppression d'une note")) this.afficherInterfaceSuppressionNote();
+else if(tache.equals("Moyenne par matière")) this.afficherMoyenneParMatiere();
+		
+}
+	
+	
+}
+
+
+
+
+
+
+//-Partie Etudiants---------------------------------------------------------------------------------------------------------
+
+private void afficherListeEtudiants(String typeTache){
+
+String[] nomsDesColonnes = {"ID","Nom","Prénom(s)","Date de naissance"};	
+	
+if(typeTache.equals("listage")){
+	
+
+if(this.cc.getComponentCount() != 0){
+this.cc.removeAll();
+this.cc.validate();
+}
+
+this.cc.add(this.trierDonneesRecues(etdt.listerEtudiants(),nomsDesColonnes,"Etudiants"));
+
+}
+else if(typeTache.equals("recherche")){
+	
+this.cc.setPreferredSize(new Dimension(1009,400));
+this.cc.add(this.trierDonneesRecues(etdt.rechercherEtudiant(this.cnr.getText()),nomsDesColonnes,"Etudiants"));
+
+}
+
+this.cc.validate();
+this.cp.validate();
+	
+}
+
+
+
+}
+
+return scrollPane;	
+	
+}
+
+
+
+}
