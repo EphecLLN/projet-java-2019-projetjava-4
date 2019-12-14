@@ -46,7 +46,7 @@ public Accueil(){
 this.cp = new JPanel(false);
 this.cp.setBackground(Color.WHITE);
 
-JLabel nomApplication = new JLabel("ESTM - GESTION DES NOTES");
+JLabel nomApplication = new JLabel("Ephec - Gestion des étudiants");
 nomApplication.setOpaque(true);
 nomApplication.setBackground(Color.WHITE);
 nomApplication.setForeground(new Color(102,51,0));
